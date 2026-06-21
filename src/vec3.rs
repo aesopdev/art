@@ -3,17 +3,24 @@ pub struct Vec3 {
     pub e: [f64; 3],
 }
 
-
 impl Vec3 {
     pub fn new(e0: f64, e1: f64, e2: f64) -> Self {
         Self { e: [e0, e1, e2] }
     }
 
-    pub fn x(&self) -> f64 { self.e[0] }
-    pub fn y(&self) -> f64 { self.e[1] }
-    pub fn z(&self) -> f64 { self.e[2] }
+    pub fn x(&self) -> f64 {
+        self.e[0]
+    }
+    pub fn y(&self) -> f64 {
+        self.e[1]
+    }
+    pub fn z(&self) -> f64 {
+        self.e[2]
+    }
 
-    pub fn length(&self) -> f64 { self.length_squared().sqrt() }
+    pub fn length(&self) -> f64 {
+        self.length_squared().sqrt()
+    }
     pub fn length_squared(&self) -> f64 {
         let mut sum: f64 = 0.0;
         for i in 0..3 {
@@ -26,7 +33,9 @@ impl Vec3 {
 impl std::ops::Neg for Vec3 {
     type Output = Vec3;
     fn neg(self) -> Vec3 {
-        Self { e: [-self.e[0], -self.e[1], -self.e[2]] }
+        Self {
+            e: [-self.e[0], -self.e[1], -self.e[2]],
+        }
     }
 }
 
@@ -69,9 +78,9 @@ impl std::ops::Add for Vec3 {
     type Output = Vec3;
     fn add(self, rhs: Vec3) -> Vec3 {
         Vec3::new(
-                self.e[0] + rhs.e[0],
-                self.e[1] + rhs.e[1],
-                self.e[2] + rhs.e[2],
+            self.e[0] + rhs.e[0],
+            self.e[1] + rhs.e[1],
+            self.e[2] + rhs.e[2],
         )
     }
 }
@@ -80,9 +89,9 @@ impl std::ops::Sub for Vec3 {
     type Output = Vec3;
     fn sub(self, rhs: Vec3) -> Vec3 {
         Vec3::new(
-                self.e[0] - rhs.e[0],
-                self.e[1] - rhs.e[1],
-                self.e[2] - rhs.e[2],
+            self.e[0] - rhs.e[0],
+            self.e[1] - rhs.e[1],
+            self.e[2] - rhs.e[2],
         )
     }
 }
@@ -103,12 +112,8 @@ impl std::ops::Mul for Vec3 {
 impl std::ops::Mul<f64> for Vec3 {
     type Output = Vec3;
     fn mul(self, t: f64) -> Vec3 {
-        Vec3::new(
-            self.e[0] * t,
-            self.e[1] * t,
-            self.e[2] * t,
-        )
-    } 
+        Vec3::new(self.e[0] * t, self.e[1] * t, self.e[2] * t)
+    }
 }
 
 impl std::ops::Mul<Vec3> for f64 {
@@ -136,9 +141,10 @@ pub fn dot(u: Vec3, v: Vec3) -> f64 {
 }
 
 pub fn cross(u: Vec3, v: Vec3) -> Vec3 {
-    Vec3::new(u.e[1] * v.e[2] - u.e[2] * v.e[1],
-                u.e[2] * v.e[0] - u.e[0] * v.e[2],
-                u.e[0] * v.e[1] - u.e[1] * v.e[0]
+    Vec3::new(
+        u.e[1] * v.e[2] - u.e[2] * v.e[1],
+        u.e[2] * v.e[0] - u.e[0] * v.e[2],
+        u.e[0] * v.e[1] - u.e[1] * v.e[0],
     )
 }
 pub fn unit_vector(v: Vec3) -> Vec3 {

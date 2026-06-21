@@ -12,5 +12,4 @@ pub fn write_color(out: &mut impl std::io::Write, pixel_color: Color) {
     let bbyte: usize = (255.999 * b) as usize;
 
     writeln!(out, "{} {} {}", rbyte, gbyte, bbyte).unwrap();
-    
 }
