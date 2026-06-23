@@ -9,8 +9,14 @@ use vec3::Vec3;
 
 fn main() {
     // image
-    let img_width: i32 = 256;
-    let img_height: i32 = 256;
+    let aspect_ratio: f64 = 16.0 / 9.0;
+    let img_width: i32 = 400;
+    let img_height = ((img_width as f64) / aspect_ratio) as i32;
+    let img_height = std::cmp::max(img_height, 1);
+
+    let viewport_height = 2.0;
+    let viewport_width = viewport_height * ((img_width as f64) / (img_height as f64));
+    
     let mut stdout = std::io::stdout().lock();
 
     // render
