@@ -8,10 +8,13 @@ use crate::ray::Ray;
 use crate::color::write_color;
 use crate::color::Color;
 use crate::vec3::Point3;
+use crate::vec3::unit_vector;
 use vec3::Vec3;
 
 fn ray_color(r: &Ray) -> Color {
-    Color::new(0.0, 0.0, 0.0)
+    let unit_direction: Vec3 = unit_vector(r.direction());
+    let a = 0.5 * (unit_direction.y() + 1.0);
+    (1.0 - a) * Color::new(1.0, 1.0, 1.0) + a * Color::new(0.5, 0.7, 1.0)
 }
 
 fn main() {
