@@ -3,6 +3,8 @@
 mod color;
 mod vec3;
 mod ray;
+mod hittable;
+mod sphere;
 
 use crate::ray::Ray;
 use crate::color::write_color;
@@ -14,17 +16,18 @@ use vec3::Vec3;
 
 fn hit_sphere(center: Point3, radius: f64, r: &Ray) -> f64 {
     let oc: Vec3 = center - r.origin();
-    let a = dot(r.direction(), r.direction());
-    let b = -2.0 * dot(oc, oc) - radius * radius;
-    let c = dot(oc,oc) - radius * radius;
+    let a = r.direction().length_squared();
+    let h = dot(r.direction(), oc);
+    let c = oc.length_squared() - radius * radius;
 
-    let discriminant = b * b - 4.0 * a * c;
+    let discriminant = h * h - a * c;
 
     if discriminant < 0.0 {
         return -1.0;
     } else {
         // return -b - discriminant.sqrt() / 2.0 * a; TODO: try this at end instead of below line
-        return (-b - discriminant.sqrt()) / (2.0 * a);
+        // return h - discriminant.sqrt() / a; SAME AS ABOVE
+        return (h - discriminant.sqrt()) / a;
     }
 }
 
