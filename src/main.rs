@@ -5,37 +5,42 @@ mod vec3;
 mod ray;
 mod hittable;
 mod sphere;
+mod util;
 
+use std::f64::INFINITY;
+
+use crate::hittable::HitRecord;
+use crate::hittable::Hittable;
+use crate::hittable::HittableList;
 use crate::ray::Ray;
 use crate::color::write_color;
 use crate::color::Color;
+use crate::sphere::Sphere;
 use crate::vec3::Point3;
-use crate::vec3::dot;
 use crate::vec3::unit_vector;
 use vec3::Vec3;
 
-fn hit_sphere(center: Point3, radius: f64, r: &Ray) -> f64 {
-    let oc: Vec3 = center - r.origin();
-    let a = r.direction().length_squared();
-    let h = dot(r.direction(), oc);
-    let c = oc.length_squared() - radius * radius;
+// fn hit_sphere(center: Point3, radius: f64, r: &Ray) -> f64 {
+//     let oc: Vec3 = center - r.origin();
+//     let a = r.direction().length_squared();
+//     let h = dot(r.direction(), oc);
+//     let c = oc.length_squared() - radius * radius;
 
-    let discriminant = h * h - a * c;
+//     let discriminant = h * h - a * c;
 
-    if discriminant < 0.0 {
-        return -1.0;
-    } else {
-        // return -b - discriminant.sqrt() / 2.0 * a; TODO: try this at end instead of below line
-        // return h - discriminant.sqrt() / a; SAME AS ABOVE
-        return (h - discriminant.sqrt()) / a;
-    }
-}
+//     if discriminant < 0.0 {
+//         return -1.0;
+//     } else {
+//         // return -b - discriminant.sqrt() / 2.0 * a; TODO: try this at end instead of below line
+//         // return h - discriminant.sqrt() / a; SAME AS ABOVE
+//         return (h - discriminant.sqrt()) / a;
+//     }
+// }
 
-fn ray_color(r: &Ray) -> Color {
-    let t = hit_sphere(Point3::new(0.0, 0.0, -1.0), 0.5, r);
-    if t > 0.0 {
-        let n = unit_vector(r.at(t) - Vec3::new(0.0, 0.0, -1.0));
-        return 0.5 * Color::new(n.x() + 1.0, n.y() + 1.0, n.z() + 1.0);
+fn ray_color(r: &Ray, world: &HittableList) -> Color {
+    let rec = &mut HitRecord::default();
+    if world.hit(r, 0.0, INFINITY, rec) {
+        return 0.5 * (rec.normal + Color::new(1.0,1.0,1.0));
     }
 
     let unit_direction: Vec3 = unit_vector(r.direction());
@@ -52,6 +57,17 @@ fn main() {
     let img_height = ((img_width as f64) / aspect_ratio) as i32;
     let img_height = std::cmp::max(img_height, 1);
 
+    // world
+    let mut world = HittableList::default();
+    let sphere = Sphere::new(Point3::new(0.0, 0.0, -1.0), 0.5);
+    let boxed_sphere = Box::new(sphere);
+
+    let g_sphere = Sphere::new(Point3::new(0.0, -100.5, -1.0), 100.0);
+    let gb_sphere = Box::new(g_sphere);
+    world.add(boxed_sphere);
+    world.add(gb_sphere);
+    
+    
     let focal_length: f64 = 1.0;
     let viewport_height = 2.0;
     let viewport_width = viewport_height * ((img_width as f64) / (img_height as f64));
@@ -82,7 +98,7 @@ fn main() {
             let ray_direction = pixel_center - camera_center;
             let r = Ray::new(camera_center, ray_direction);
 
-            let pixel_color = ray_color(&r);
+            let pixel_color = ray_color(&r, &world);
             write_color(&mut stdout, pixel_color);
         }
     }
