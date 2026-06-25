@@ -6,12 +6,14 @@ mod ray;
 mod hittable;
 mod sphere;
 mod util;
+mod interval;
 
 use std::f64::INFINITY;
 
 use crate::hittable::HitRecord;
 use crate::hittable::Hittable;
 use crate::hittable::HittableList;
+use crate::interval::Interval;
 use crate::ray::Ray;
 use crate::color::write_color;
 use crate::color::Color;
@@ -39,7 +41,7 @@ use vec3::Vec3;
 
 fn ray_color(r: &Ray, world: &HittableList) -> Color {
     let rec = &mut HitRecord::default();
-    if world.hit(r, 0.0, INFINITY, rec) {
+    if world.hit(r, Interval::new(0.0, INFINITY), rec) {
         return 0.5 * (rec.normal + Color::new(1.0,1.0,1.0));
     }
 
