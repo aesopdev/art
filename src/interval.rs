@@ -24,6 +24,11 @@ impl Interval {
     pub const fn surrounds(&self, x: f64) -> bool {
         self.min < x && x < self.max
     }
+    pub const fn clamp(&self, x: f64) -> f64 {
+        if x < self.min { return self.min };
+        if x > self.max { return self.max };
+        x
+    }
     
     pub const EMPTY: Interval = Interval::new(INFINITY, NEG_INFINITY);
     pub const UNIVERSE: Interval = Interval::new(NEG_INFINITY, INFINITY);
