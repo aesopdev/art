@@ -1,11 +1,12 @@
 
+use std::rc::Rc;
+use crate::{interval::Interval, ray::{Ray}, vec3::{Point3, Vec3, dot}, material::{DefaultMaterial, Material}};
 
-use crate::{hittable, interval::Interval, ray::{Ray}, vec3::{Point3, Vec3, dot}};
-
-#[derive(Clone, Default)]
+#[derive(Clone)]
 pub struct HitRecord {
     pub p: Point3, 
-    pub normal: Vec3, 
+    pub normal: Vec3,
+    pub mat: Rc<dyn Material>,
     pub t: f64,
     pub front_face: bool,
 }
@@ -31,6 +32,13 @@ impl Default for HittableList {
     fn default() -> Self {
         Self { objects: Vec::new() }
     }
+}
+
+impl Default for HitRecord {
+    fn default() -> Self {
+        HitRecord { p: Point3::default(), normal: Vec3::default(), mat: Rc::new(DefaultMaterial), t: 0.0, front_face: false }
+    }
+    
 }
 
 impl Hittable for HittableList {

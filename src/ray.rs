@@ -23,3 +23,8 @@ impl Ray {
         self.dir
     }
 }
+impl Default for Ray {
+    fn default() -> Self {
+        Ray::new(Point3::default(), Vec3::default())
+    }
+}
