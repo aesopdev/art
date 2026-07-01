@@ -19,7 +19,7 @@ fn main() {
     let sphere = Sphere::new(Point3::new(0.0, 0.0, -1.0), 0.5);
     let boxed_sphere = Box::new(sphere);
 
-    let cam: Camera = Camera { aspect_ratio: 16.0 / 9.0, img_width: 400, samples_per_pixel: 100 };
+    let cam: Camera = Camera { aspect_ratio: 16.0 / 9.0, img_width: 400, samples_per_pixel: 100, max_depth: 50 };
     
     let g_sphere = Sphere::new(Point3::new(0.0, -100.5, -1.0), 100.0);
     let gb_sphere = Box::new(g_sphere);
