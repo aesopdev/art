@@ -1,6 +1,6 @@
 use std::io::Write;
 
-use crate::{write_color, interval::Interval, ray::{Ray}, vec3::{Point3, Vec3}, hittable::{Hittable, HitRecord}, color::Color, unit_vector, INFINITY, util::random_double};
+use crate::{INFINITY, color::Color, hittable::{HitRecord, Hittable}, interval::Interval, ray::{Ray}, unit_vector, util::random_double, vec3::{Point3, Vec3}, write_color};
 
 pub struct Camera {
     pub aspect_ratio: f64,
@@ -38,7 +38,7 @@ impl Camera {
         writeln!(stdout, "P3\n{} {}\n255", self.img_width, s.img_height).unwrap();
 
         for j in 0..s.img_height {
-            // eprintln!("\rScanlines remaining: {} ", j);
+            eprintln!("\rScanlines remaining: {} ", s.img_height - j);
             for i in 0..self.img_width {
                 // let pixel_center = s.pixel00_loc + (s.pixel_delta_u * i as f64) + (s.pixel_delta_v * j as f64);
                 // let ray_direction = pixel_center - s.center;
@@ -46,7 +46,7 @@ impl Camera {
                 let mut pixel_color = Color::new(0.0, 0.0, 0.0);
                 for _ in 0..self.samples_per_pixel {
                     let r = self.get_ray(i, j);
-                    pixel_color += Self::ray_color(&r, world);
+                    pixel_color += self.ray_color(&r, world);
                 }
                 write_color(&mut stdout, pixel_color * s.pixel_samples_scale);
             }
@@ -94,10 +94,11 @@ impl Camera {
         CameraState { img_height, center, pixel_samples_scale, pixel00_loc, pixel_delta_u, pixel_delta_v }
     }
 
-    fn ray_color(r: &Ray, world: &impl Hittable) -> Color {
+    fn ray_color(&self, r: &Ray, world: &impl Hittable) -> Color {
         let rec = &mut HitRecord::default();
         if world.hit(r, Interval::new(0.0, INFINITY), rec) {
-            return 0.5 * (rec.normal + Color::new(1.0,1.0,1.0));
+            let direction = Vec3::random_on_hemisphere(rec.normal);
+            return 0.5 * self.ray_color(&Ray::new(rec.p, direction), world);
         }
     
         let unit_direction: Vec3 = unit_vector(r.direction());
